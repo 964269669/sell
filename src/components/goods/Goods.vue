@@ -2,7 +2,7 @@
   <div class="goods">
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li v-for="item in goods" class="menu-item">
+        <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
@@ -11,7 +11,8 @@
     </div>
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
-        <li v-for="item in goods" class="food-list">
+        <!-- food-list-hook这个类 表明是被js选择的，无实际样式意义 -->
+        <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li v-for="food in item.foods" class="food-item border-1px">
@@ -49,7 +50,23 @@
     },
     data() {
       return {
-        goods: []
+        goods: [],
+        listHeight: [], // li的高度区间
+        scrollY: 0 // 实时滚动Y值
+      }
+    },
+    computed: {
+      // 左侧菜单栏的当前索引
+      currentIndex() {
+        for (let i = 0; i < this.listHeight.length; i++) {
+          let height1 = this.listHeight[i]
+          let height2 = this.listHeight[i + 1]
+          // 如果滚动到最后一个 i+1就是undefined的了
+          if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+            return i
+          }
+        }
+        return 0 // 如果listHeight没有，返回0
       }
     },
     created() {
@@ -59,16 +76,48 @@
         response = response.body
         if (response.errno === ERR_OK) {
           this.goods = response.data
+          // 一定要在dom渲染后再计算
           this.$nextTick(() => {
             this._initScroll()
+            this._calculateHeight()
           })
         }
       })
     },
     methods: {
+      selectMenu(index, event) {
+        // 浏览器原生事件没有_constructed属性,如果监听到是浏览器的事件 就return
+        if (!event._constructed) {
+          return
+        }
+        let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook')
+        let el = foodList[index]
+        // 调用BScroll的方法滚动
+        this.foodsScroll.scrollToElement(el, 300)
+      },
       _initScroll() {
-        this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
-        this.foodScroll = new BScroll(this.$refs.foodsWrapper, {})
+        this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+          click: true
+        })
+        this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+          probeType: 3
+        })
+        // BScoll监听滚动事件 pos为实时滚动位置
+        this.foodsScroll.on('scroll', (pos) => {
+          this.scrollY = Math.abs(Math.round(pos.y))
+          // console.log(this.scrollY)
+        })
+      },
+      // 计算高度区间
+      _calculateHeight() {
+        let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook')
+        let height = 0
+        this.listHeight.push(height)
+        for (let i = 0; i < foodList.length; i++) {
+          let item = foodList[i]
+          height += item.clientHeight
+          this.listHeight.push(height)
+        }
       }
     }
   }
@@ -94,6 +143,14 @@
         height: 54px;
         line-height: 14px;
         padding: 0 12px
+        &.current
+          position: relative;
+          margin-top: -1px;
+          z-index: 10;
+          background: #fff;
+          font-weight: 700;
+          .text
+            border-none()
         .icon
           display: inline-block
           vertical-align: top
