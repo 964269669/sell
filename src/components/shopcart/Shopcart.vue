@@ -149,12 +149,12 @@
         .desc
           display: inline-block;
           line-height: 24px;
-          margin: 12px 0 0 12px;
+          margin: 12px 0 0 10px;
           color: rgba(255, 255, 255, 0.4);
           font-size: 10px;
       .content-right
-        flex: 0 0 150px
-        width: 150px;
+        flex: 0 0 130px
+        width: 130px;
         .pay
           height: 48px;
           line-height: 48px;
