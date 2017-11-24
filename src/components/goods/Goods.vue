@@ -1,5 +1,6 @@
 <template>
   <div class="goods">
+    <!-- 左侧菜单栏 -->
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
         <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index,$event)">
@@ -9,6 +10,7 @@
         </li>
       </ul>
     </div>
+    <!-- 右侧商品栏 -->
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
         <!-- food-list-hook这个类 表明是被js选择的，无实际样式意义 -->
@@ -28,6 +30,7 @@
                 <div class="price">
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <!-- 组件cartcontrol -->
                 <div class="cartcontrol-wrapper">
                   <cartcontrol :food="food"></cartcontrol>
                 </div>
@@ -37,7 +40,8 @@
         </li>
       </ul>
     </div>
-    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <!-- 底部结算区域 -->
+    <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -51,12 +55,12 @@
   export default {
     props: {
       seller: {
-        type: Object
+        type: Object // 从父组件App中router-view传来
       }
     },
     data() {
       return {
-        goods: [],
+        goods: [], // 从服务器获取到的商品
         listHeight: [], // li的高度区间
         scrollY: 0 // 实时滚动Y值
       }
@@ -83,6 +87,7 @@
             }
           })
         })
+        // console.log(foods)
         return foods
       }
     },
@@ -111,6 +116,9 @@
         let el = foodList[index]
         // 调用BScroll的方法滚动
         this.foodsScroll.scrollToElement(el, 300)
+      },
+      _drop(target) {
+        this.$refs.shopcart.drop(target)
       },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
@@ -141,6 +149,11 @@
     components: {
       shopcart,
       cartcontrol
+    },
+    events: {
+      'cart.add'(target) {
+        this._drop(target)
+      }
     }
   }
 </script>

@@ -17,6 +17,13 @@
         </div>
       </div>
     </div>
+    <div class="ball-container">
+      <transition-group name="drop" tag="div">
+        <div class="ball" v-for="(ball,index) in balls" v-show="ball.show" :key="index">
+          <div class="inner"></div>
+        </div>
+      </transition-group>
+    </div>
   </div>
 </template>
 
@@ -41,6 +48,27 @@
       minPrice: {
         type: Number,
         default: 0
+      }
+    },
+    data() {
+      return {
+        balls: [
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          }
+        ]
       }
     },
     computed: {
@@ -74,6 +102,11 @@
         } else {
           return 'enough'
         }
+      }
+    },
+    methods: {
+      drop(el) {
+        console.log(el)
       }
     }
   }
@@ -166,4 +199,18 @@
           &.enough
             background: #00b43c;
             color: #fff
+    .ball-container
+      .ball
+        position: fixed;
+        left: 32px;
+        bottom: 22px;
+        z-index: 200;
+        &.drop-enter-active,&.drop-leave-active
+          transition: all 0.4
+          .inner
+            width: 16px;
+            height: 16px;
+            border-radius: 50%
+            background: rgb(0, 160, 220);
+            transition: all 0.4
 </style>

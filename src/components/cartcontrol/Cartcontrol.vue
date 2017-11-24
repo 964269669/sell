@@ -29,6 +29,8 @@
         } else {
           this.food.count++
         }
+        // 派发事件
+        this.$dispatch('cart.add', event.target)
       },
       decreaseCart(event) {
         if (!event._constructed) {
@@ -49,21 +51,18 @@
     .cart-decrease
       display: inline-block
       padding: 6px;
-      transition: all 0.4s linear 
-      opacity: 1; 
-      transform: translate3D(0, 0, 0) 
       .inner
         display: inline-block;
         font-size: 24px;
         line-height: 24px;
         color: rgb(0, 160, 220)
+      &.move-enter-active,&.move-leave-active
+        transform: translate3D(0px, 0, 0)
+        opacity: 1;
         transition: all 0.4s linear
-        transform: rotate(0)
       &.move-enter,&.move-leave-to
         opacity: 0;
         transform: translate3D(24px, 0, 0)
-        .inner
-          transform: rotate(180deg)
     .cart-count
       display: inline-block
       vertical-align: top;
