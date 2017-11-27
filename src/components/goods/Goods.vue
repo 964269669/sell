@@ -118,7 +118,11 @@
         this.foodsScroll.scrollToElement(el, 300)
       },
       _drop(target) {
-        this.$refs.shopcart.drop(target)
+        // 解决第一次点动画(两个动画一起执行)有点卡
+        // 不让动画立即执行 异步执行
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target)
+        })
       },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
