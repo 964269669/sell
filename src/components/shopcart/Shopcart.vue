@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="ball-container">
-      <transition-group name="drop" tag="div">
+      <transition-group name="drop" tag="div" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
         <div class="ball" v-for="(ball,index) in balls" v-show="ball.show" :key="index">
           <div class="inner inner-hook"></div>
         </div>
@@ -69,7 +69,7 @@
             show: false
           }
         ],
-        dropBalls: []
+        dropBalls: [] // 已经下落的小球
       }
     },
     computed: {
@@ -106,7 +106,9 @@
       }
     },
     methods: {
+      // el是cartcontrol组件中的event.target
       drop(el) {
+        console.log('drop')
         for (let i = 0; i < this.balls.length; i++) {
           let ball = this.balls[i]
           if (!ball.show) {
@@ -116,44 +118,46 @@
             return
           }
         }
-      }
-    },
-    transition: {
-      drop: {
-        beforeEnter(el) {
-          let count = this.balls.length
-          while (count--) {
-            let ball = this.balls[count]
-            if (ball.show) {
-              let rect = ball.el.getBoundingClientRect()
-              let x = rect.left - 32
-              let y = -(window.innerHeight - rect.top - 22)
-              el.style.display = ''
-              el.style.webkitTransform = `translate3d(0, ${y}px, 0)`
-              el.style.transform = `translate3d(0, ${y}px, 0)`
-              let inner = el.getElementsByClassName('inner-hook')[0]
-              inner.style.webkitTransform = `translate3d(${x}px, 0, 0)`
-              inner.style.transform = `translate3d(${x}px, 0, 0)`
-            }
-          }
-        },
-        enter(el) {
-          /* eslint-disable no-unused-vars */
-          let rf = el.offsetHeight // 触发浏览器重绘
-          this.$nextTick(() => {
-            el.style.webkitTransform = 'translate3d(0, 0, 0)'
-            el.style.transform = 'translate3d(0, 0, 0)'
+      },
+      beforeEnter(el) {
+        console.log('before')
+        let count = this.balls.length
+        while (count--) {
+          let ball = this.balls[count]
+          // 找到所有show为true的小球
+          if (ball.show) {
+            let rect = ball.el.getBoundingClientRect()
+            let x = rect.left - 32
+            let y = -(window.innerHeight - rect.top - 22)
+            el.style.display = '' // 显示
+            // 外层做纵向动画
+            el.style.webkitTransform = `translate3d(0, ${y}px, 0)`
+            el.style.transform = `translate3d(0, ${y}px, 0)`
             let inner = el.getElementsByClassName('inner-hook')[0]
-            inner.style.webkitTransform = 'translate3d(0, 0, 0)'
-            inner.style.transform = 'translate3d(0, 0, 0)'
-          })
-        },
-        afterEnter(el) {
-          let ball = this.dropBalls.shift()
-          if (ball) {
-            ball.show = false
-            el.style.disable = 'none'
+            // 内层做横向动画
+            inner.style.webkitTransform = `translate3d(${x}px, 0, 0)`
+            inner.style.transform = `translate3d(${x}px, 0, 0)`
           }
+        }
+      },
+      enter(el) {
+        console.log('enter')
+        /* eslint-disable no-unused-vars */
+        let rf = el.offsetHeight // 主动触发浏览器重绘
+        this.$nextTick(() => {
+          el.style.webkitTransform = 'translate3d(0, 0, 0)'
+          el.style.transform = 'translate3d(0, 0, 0)'
+          let inner = el.getElementsByClassName('inner-hook')[0]
+          inner.style.webkitTransform = 'translate3d(0, 0, 0)'
+          inner.style.transform = 'translate3d(0, 0, 0)'
+        })
+      },
+      afterEnter(el) {
+        console.log('after')
+        let ball = this.dropBalls.shift()
+        if (ball) {
+          ball.show = false
+          el.style.display = 'none'
         }
       }
     }
@@ -249,16 +253,17 @@
             color: #fff
     .ball-container
       .ball
-        position: fixed;
+        position: fixed; /* 相对于视口做动画 要固定定位  */
         left: 32px;
         bottom: 22px;
         z-index: 200;
-        &.drop-enter-active,&.drop-leave-active
-          transition: all 0.4 cubic-bezier
+        .inner
+          width: 16px;
+          height: 16px;
+          border-radius: 50%
+          background: rgb(0, 160, 220);
+        &.drop-enter-active
+          transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
           .inner
-            width: 16px;
-            height: 16px;
-            border-radius: 50%
-            background: rgb(0, 160, 220);
-            transition: all 0.4 linear
+            transition: all 0.4s
 </style>

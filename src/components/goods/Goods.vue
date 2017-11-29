@@ -32,7 +32,7 @@
                 </div>
                 <!-- 组件cartcontrol -->
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol :food="food" @cart.add="_drop"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -78,16 +78,17 @@
         }
         return 0 // 如果listHeight没有，返回0
       },
+      // 选中的food
       selectFoods() {
         let foods = []
         this.goods.forEach((good) => {
           good.foods.forEach((food) => {
+            // 如果有count属性，说明点击了加号按钮
             if (food.count) {
               foods.push(food)
             }
           })
         })
-        // console.log(foods)
         return foods
       }
     },
@@ -105,6 +106,13 @@
           })
         }
       })
+      // 接受cartcontrol中发送的数据
+      // this.$root.eventHub.$on('cart.add', (target) => {
+        // this._drop(target)
+      // })
+      // this.$on('cart.add', (target) => {
+      //   this._drop(target)
+      // })
     },
     methods: {
       selectMenu(index, event) {
@@ -118,10 +126,13 @@
         this.foodsScroll.scrollToElement(el, 300)
       },
       _drop(target) {
+        // console.log(target)
         // 解决第一次点动画(两个动画一起执行)有点卡
         // 不让动画立即执行 异步执行
         this.$nextTick(() => {
+          // 调用shopcart的drop方法
           this.$refs.shopcart.drop(target)
+          // console.log(this.$refs.shopcart)
         })
       },
       _initScroll() {
@@ -153,11 +164,11 @@
     components: {
       shopcart,
       cartcontrol
-    },
-    events: {
-      'cart.add'(target) {
-        this._drop(target)
-      }
+    // },
+    // events: {
+    //   'cart.add'(target) {
+    //     this._drop(target)
+    //   }
     }
   }
 </script>

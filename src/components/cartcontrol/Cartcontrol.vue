@@ -30,13 +30,13 @@
           this.food.count++
         }
         // 派发事件
-        // this.$dispatch('cart.add', event.target)
+        // this.$root.eventHub.$emit('cart.add', event.target)
+        this.$emit('cart.add', event.target)
       },
       decreaseCart(event) {
         if (!event._constructed) {
           return
         }
-        console.log('-')
         if (this.food.count) {
           this.food.count--
         }
@@ -51,19 +51,24 @@
     .cart-decrease
       display: inline-block
       padding: 6px;
+      opacity: 1;
       .inner
         display: inline-block;
         font-size: 24px;
         line-height: 24px;
         color: rgb(0, 160, 220)
-        /* &.move-enter-active,&.move-leave-active */
       &.move-enter-active,&.move-leave-active
         transform: translate3d(0px, 0, 0)
         opacity: 1;
         transition: all 0.4s linear
+        .inner
+          transition: all 0.4s linear
+          transform: rotate(0)
       &.move-enter,&.move-leave-to
         opacity: 0;
         transform: translate3d(24px, 0, 0)
+        .inner
+          transform: rotate(180deg)
     .cart-count
       display: inline-block
       vertical-align: top;
