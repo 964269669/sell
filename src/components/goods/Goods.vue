@@ -30,9 +30,9 @@
                 <div class="price">
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
-                <!-- 组件cartcontrol -->
+                <!-- 组件cartcontrol @cart.add="_drop" -->
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food" @cart.add="_drop"></cartcontrol>
+                  <cartcontrol :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -107,9 +107,9 @@
         }
       })
       // 接受cartcontrol中发送的数据
-      // this.$root.eventHub.$on('cart.add', (target) => {
-        // this._drop(target)
-      // })
+      this.$root.eventHub.$on('cart.add', (target) => {
+        this._drop(target)
+      })
       // this.$on('cart.add', (target) => {
       //   this._drop(target)
       // })
@@ -127,7 +127,7 @@
       },
       _drop(target) {
         // console.log(target)
-        // 解决第一次点动画(两个动画一起执行)有点卡
+        // 体验优化解决第一次点动画(两个动画一起执行)有点卡
         // 不让动画立即执行 异步执行
         this.$nextTick(() => {
           // 调用shopcart的drop方法

@@ -1,6 +1,6 @@
 <template>
   <div class="shopcart">
-    <div class="content">
+    <div class="content" @click="toggleList">
       <div class="content-left">
         <div class="logo-wrapper">
           <div class="logo" :class="{'highlight':totalCount>0}">
@@ -24,10 +24,34 @@
         </div>
       </transition-group>
     </div>
+    <transition name="fold">
+      <div class="shopcart-list" v-show="listShow">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty">清空</span>
+        </div>
+        <div class="list-content" ref="listContent">
+          <ul>
+            <li class="food" v-for="food in selectFoods">
+              <span class="name">{{food.name}}</span>
+              <div class="price">
+                <span>￥{{food.price*food.count}}</span>
+              </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol :food="food"></cartcontrol>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import BScroll from 'better-scroll'
+  import cartcontrol from 'components/cartcontrol/Cartcontrol'
+
   export default {
     props: {
       selectFoods: {
@@ -69,10 +93,12 @@
             show: false
           }
         ],
-        dropBalls: [] // 已经下落的小球
+        dropBalls: [], // 已经下落的小球
+        fold: true // 已选菜单展开折叠
       }
     },
     computed: {
+      // 已选商品总价格
       totalPrice() {
         let total = 0
         this.selectFoods.forEach((food) => {
@@ -80,6 +106,7 @@
         })
         return total
       },
+      // 已选商品总数
       totalCount() {
         let count = 0
         this.selectFoods.forEach((food) => {
@@ -87,6 +114,7 @@
         })
         return count
       },
+      // 结算描述
       payDesc() {
         if (this.totalPrice === 0) {
           return `￥${this.minPrice}元起送`
@@ -97,18 +125,43 @@
           return '去结算'
         }
       },
+      // 结算的样式
       payClass() {
         if (this.totalPrice < this.minPrice) {
           return 'not-enough'
         } else {
           return 'enough'
         }
+      },
+      // 已选菜单的显隐
+      listShow() {
+        // 如果没有商品则折叠
+        if (!this.totalCount) {
+          this.fold = true
+          return false
+        }
+        // 折叠变量与shopcart-list的显隐正好相反
+        let show = !this.fold
+        // 当显示列表的时候初始BScroll
+        if (show) {
+          this.$nextTick(() => {
+            // 因为show是变化的，不肯每次变化都初始化BScroll
+            if (!this.scroll) {
+              this.scroll = new BScroll(this.$refs.listContent, {
+                click: true
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
+        }
+        return show
       }
     },
     methods: {
       // el是cartcontrol组件中的event.target
       drop(el) {
-        console.log('drop')
+        // console.log('drop')
         for (let i = 0; i < this.balls.length; i++) {
           let ball = this.balls[i]
           if (!ball.show) {
@@ -120,7 +173,7 @@
         }
       },
       beforeEnter(el) {
-        console.log('before')
+        // console.log('before')
         let count = this.balls.length
         while (count--) {
           let ball = this.balls[count]
@@ -141,7 +194,7 @@
         }
       },
       enter(el) {
-        console.log('enter')
+        // console.log('enter')
         /* eslint-disable no-unused-vars */
         let rf = el.offsetHeight // 主动触发浏览器重绘
         this.$nextTick(() => {
@@ -153,18 +206,29 @@
         })
       },
       afterEnter(el) {
-        console.log('after')
+        // console.log('after')
         let ball = this.dropBalls.shift()
         if (ball) {
           ball.show = false
           el.style.display = 'none'
         }
+      },
+      toggleList() {
+        if (!this.totalCount) {
+          return
+        }
+        this.fold = !this.fold
       }
+    },
+    components: {
+      cartcontrol
     }
   }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  @import '../../common/stylus/mixin.styl';
+
   .shopcart
     position: fixed;
     left: 0;
@@ -265,5 +329,59 @@
         &.drop-enter-active
           transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
           .inner
-            transition: all 0.4s
+            transition: all 0.4s linear
+    .shopcart-list
+      position: absolute;
+      top: 0
+      left: 0;
+      z-index: -1; 
+      width: 100%;
+      /* 最终变化成什么样 一定要在标签中再定义 */
+      transform: translate3d(0, -100%, 0) 
+      &.fold-enter-active,&.fold-leave-active 
+        transition: all 0.5s
+        /* translateY值为正向下移动(Y轴负方向)，为负向上(Y轴正方向) */
+        transform: translate3d(0, -100%, 0)
+      &.fold-enter,&.fold-leave-to
+        transform: translate3d(0, 0, 0)
+      .list-header
+        height: 40px;
+        line-height: 40px;
+        padding: 0 18px;
+        background: #f3f5f7;
+        border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+        .title
+          float: left;
+          font-size: 14px;
+          color: rgb(7, 17, 27);
+        .empty
+          float: right;
+          font-size: 12px;
+          color: rgb(0, 160, 200);
+      .list-content
+        padding: 0 18px;
+        max-height: 217px
+        overflow: hidden;
+        background: #fff;
+        .food
+          position: relative;
+          padding: 12px 0;
+          box-sizing: border-box;
+          border-1px(rgba(7, 17, 27, 0.1))
+          .name
+            line-height: 24px;
+            font-size: 14px;
+            color: rgb(7, 17, 27)
+          .price
+            position: absolute;
+            right: 90px;
+            bottom: 12px;
+            line-height: 24px;
+            font-size: 14px;
+            font-weight: 700;
+            color: rgb(240, 20, 20);
+          .cartcontrol-wrapper
+            position: absolute;
+            right: 0;
+            bottom: 6px;
 </style>

@@ -30,8 +30,8 @@
           this.food.count++
         }
         // 派发事件
-        // this.$root.eventHub.$emit('cart.add', event.target)
-        this.$emit('cart.add', event.target)
+        this.$root.eventHub.$emit('cart.add', event.target)
+        // this.$emit('cart.add', event.target)
       },
       decreaseCart(event) {
         if (!event._constructed) {
