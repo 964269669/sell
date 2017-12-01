@@ -12,7 +12,7 @@
           <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
           <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
         </div>
-        <div class="content-right">
+        <div class="content-right" @click.stop.prevent="pay">
           <div class="pay" :class="payClass">
             {{payDesc}}
           </div>
@@ -48,7 +48,7 @@
       </transition>
     </div>
     <transition name="fade">
-      <div class="list-mask" v-show="listShow"></div>
+      <div class="list-mask" v-show="listShow" @click="hideList"></div>
     </transition>
   </div>
 </template>
@@ -166,7 +166,7 @@
     methods: {
       // el是cartcontrol组件中的event.target
       drop(el) {
-        // console.log('drop')
+        console.log('drop')
         for (let i = 0; i < this.balls.length; i++) {
           let ball = this.balls[i]
           if (!ball.show) {
@@ -229,6 +229,17 @@
         this.selectFoods.forEach((food) => {
           food.count = 0
         })
+      },
+      // 点击背景隐藏购物车详情
+      hideList() {
+        this.fold = true
+      },
+      // 点击支付
+      pay() {
+        if (this.totalPrice < this.minPrice) {
+          return
+        }
+        window.alert(`支付${this.totalPrice}元`)
       }
     },
     components: {
@@ -395,4 +406,21 @@
             position: absolute;
             right: 0;
             bottom: 6px;
+  .list-mask
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+    backdrop-filter: blur(10px) /* iphone下有模糊效果 */
+    opacity: 1;
+    background: rgba(7, 17, 27, 0.6);
+    &.fade-enter-active,&.fade-leave-active
+      opacity: 1;
+      background: rgba(7, 17, 27, 0.6);
+      transition: all 0.5s
+    &.fade-enter,&.fade-leave-to
+      opacity: 0;
+      background: rgba(7, 17, 27, 0);
 </style>
