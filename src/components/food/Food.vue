@@ -21,13 +21,16 @@
         <div class="cartcontrol-wrapper">
           <cartcontrol :food="food"></cartcontrol>
         </div>
-        <div class="buy" v-show="!food.count || food.count===0"></div>
+        <transition name="fade">
+          <div @click.stop.prevent="addFirst" class="buy" v-show="!food.count || food.count===0">加入购物车</div>
+        </transition>
       </div>
     </div>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
+  import Vue from 'vue'
   import BScroll from 'better-scroll'
   import cartcontrol from 'components/cartcontrol/Cartcontrol'
 
@@ -59,6 +62,13 @@
       },
       hide() {
         this.showFlag = false
+      },
+      addFirst(event) {
+        if (!event._constructed) {
+          return
+        }
+        this.$root.eventHub.$emit('cart.add', event.target)
+        Vue.set(this.food, 'count', 1)
       }
     },
     components: {
@@ -135,4 +145,23 @@
       position: absolute;
       right: 12px;
       bottom: 12px;
+    .buy
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      z-index: 10;
+      height: 24px;
+      line-height: 24px;
+      padding: 0 12px;
+      box-sizing: border-box;
+      font-size: 10px;
+      border-radius: 12px
+      color: #fff;
+      background: rgb(0, 160, 220);
+      opacity: 1;
+      &.fade-enter-active,&.fade-leave-active
+        transition: all 0.2s
+        opacity: 1;
+      &.fade-enter,&.fade-leave-to
+        opacity: 0;
 </style>
