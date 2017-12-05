@@ -61,18 +61,18 @@
         if (!event._constructed) {
           return
         }
-        console.log(1)
-        // this.selectType = type
         // 派发事件 通知父组件selectType改变了
-        this.$root.eventHub.$emit('ratingType.select', type)
+        // this.$root.eventHub.$emit('ratingType.select', type)
+        this.$emit('rating-type-select', type)
       },
       toggleContent() {
         if (!event._constructed) {
           return
         }
-        this.onlyContent = !this.onlyContent
+        // this.onlyContent = !this.onlyContent
         // 派发事件 通知父组件onlyContent改变了
-        this.$root.eventHub.$emit('content.toggle', this.onlyContent)
+        // this.$root.eventHub.$emit('content.toggle', this.onlyContent)
+        this.$emit('content-toggle', !this.onlyContent)
       }
     }
   }
