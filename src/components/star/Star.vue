@@ -71,7 +71,7 @@
         width: 15px;
         height: 15px;
         margin-right: 6px;
-        background-size: 15px 215px;
+        background-size: 15px 15px;
         &:last-child
           margin-right: 0;
         &.on

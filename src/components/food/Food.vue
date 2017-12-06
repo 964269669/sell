@@ -33,6 +33,7 @@
         <split></split>
         <div class="rating">
           <h1 class="title">商品评价</h1>
+          <!-- ratingselect组件 -->
           <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings" @rating-type-select="ratingTypeSelect" @content-toggle="contentToggle"></ratingselect>
           <div class="rating-wrapper">
             <ul v-show="food.ratings && food.ratings.length">
@@ -41,7 +42,7 @@
                   <span class="name">{{rating.username}}</span>
                   <img :src="rating.avatar" width="12" height="12" class="avatar">
                 </div>
-                <div class="time">{{rating.rateTime | formateDate}}</div>
+                <div class="time">{{rating.rateTime | formatDate}}</div>
                 <p class="text">
                   <span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>{{rating.text}}
                 </p>
@@ -58,7 +59,7 @@
 <script type="text/ecmascript-6">
   import Vue from 'vue'
   import BScroll from 'better-scroll'
-  import {formateDate} from 'common/js/date'
+  import {formatDate} from 'common/js/date'
   import cartcontrol from 'components/cartcontrol/Cartcontrol'
   import split from 'components/split/Split'
   import ratingselect from 'components/ratingselect/Ratingselect'
@@ -115,10 +116,16 @@
       // 监听子组件rating-type-select的回调函数
       ratingTypeSelect(type) {
         this.selectType = type
+        // this.$nextTick(() => {
+        //   this.scroll.refresh()
+        // })
       },
       // 监听子组件content-toggle的回调函数
       contentToggle(onlyContent) {
         this.onlyContent = onlyContent
+        // this.$nextTick(() => {
+        //   this.scroll.refresh()
+        // })
       },
       // 控制需要显示的评论类型
       needShow(type, text) {
@@ -144,9 +151,9 @@
       // })
     },
     filters: {
-      formateDate(time) {
+      formatDate(time) {
         let date = new Date(time)
-        return formateDate(date, 'yyyy-MM-dd hh:mm')
+        return formatDate(date, 'yyyy-MM-dd hh:mm')
       }
     },
     components: {
