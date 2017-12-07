@@ -59,7 +59,7 @@
   export default {
     props: {
       seller: {
-        type: Object // 从父组件App中router-view传来
+        type: Object // 从父组件App.vue中的router-view传来
       }
     },
     data() {
