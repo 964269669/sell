@@ -12,7 +12,10 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view :seller="seller"></router-view>
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
+    
   </div>
 </template>
 
@@ -26,9 +29,9 @@ export default {
   data() {
     return {
       seller: {
+        // 自执行函数获取url地址的参数
         id: (() => {
           let queryParam = urlParse()
-          console.log(queryParam)
           return queryParam.id
         })()
       }
@@ -38,8 +41,9 @@ export default {
     this.$http.get('api/seller?id=' + this.seller.id).then((response) => {
       response = response.body
       if (response.errno === ERR_OK) {
-        this.seller = response.data
-        console.log(this.seller.id)
+        // 这里不能直接给seller赋值，会把data中的数据覆盖掉，导致id属性不存在
+        // this.seller = response.data
+        this.seller = Object.assign({}, this.seller, response.data)
       }
     })
   },

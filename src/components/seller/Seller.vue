@@ -70,13 +70,17 @@
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
+  import {saveToLocal, lodaFromLocal} from 'common/js/store'
   import star from 'components/star/Star'
   import split from 'components/split/Split'
 
   export default {
     data() {
       return {
-        favorite: false
+        // 自执行函数获取缓存中的数据
+        favorite: (() => {
+          return lodaFromLocal(this.seller.id, 'favorite', false)
+        })()
       }
     },
     computed: {
@@ -137,6 +141,7 @@
           return
         }
           this.favorite = !this.favorite
+          saveToLocal(this.seller.id, 'favorite', this.favorite)
       }
     },
     mounted() { // DOM渲染(DOM结构有了未必有内容，内容异步获取)
