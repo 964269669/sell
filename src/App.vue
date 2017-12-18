@@ -70,6 +70,6 @@ export default {
           display: block
           font-size: 14px
           color: rgb(77, 85, 93)
-          &.router-link-active
+          &.active
             color: rgb(240, 20, 20)
 </style>

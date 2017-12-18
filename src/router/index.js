@@ -24,5 +24,6 @@ export default new Router({
       path: '*',
       redirect: '/goods'
     }
-  ]
+  ],
+  linkActiveClass: 'active'
 })
