@@ -116,16 +116,16 @@
       // 监听子组件rating-type-select的回调函数
       ratingTypeSelect(type) {
         this.selectType = type
-        // this.$nextTick(() => {
-        //   this.scroll.refresh()
-        // })
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
       },
       // 监听子组件content-toggle的回调函数
       contentToggle(onlyContent) {
         this.onlyContent = onlyContent
-        // this.$nextTick(() => {
-        //   this.scroll.refresh()
-        // })
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
       },
       // 控制需要显示的评论类型
       needShow(type, text) {

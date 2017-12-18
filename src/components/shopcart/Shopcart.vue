@@ -24,6 +24,14 @@
             <div class="inner inner-hook"></div>
           </div>
         </transition-group>
+        <!-- 另一版 -->
+        <!-- <div v-for="ball in balls">
+          <transition name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+            <div class="ball" v-show="ball.show">
+              <div class="inner inner-hook"></div>
+            </div>
+          </transition>
+        </div> -->
       </div>
       <transition name="fold">
         <div class="shopcart-list" v-show="listShow">
@@ -198,7 +206,7 @@
           }
         }
       },
-      enter(el) {
+      enter(el, done) {
         // console.log('enter')
         /* eslint-disable no-unused-vars */
         let rf = el.offsetHeight // 主动触发浏览器重绘
@@ -208,6 +216,8 @@
           let inner = el.getElementsByClassName('inner-hook')[0]
           inner.style.webkitTransform = 'translate3d(0, 0, 0)'
           inner.style.transform = 'translate3d(0, 0, 0)'
+          // transitionend是css3中的事件 done 函数告诉vue transition动画结束
+          el.addEventListener('transitionend', done)
         })
       },
       afterEnter(el) {
