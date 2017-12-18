@@ -49,7 +49,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       app.get('/api/seller', (req, res) => {
         res.json({
           // 这里是你的json内容
-          errno: 0,
+          errno: 0, // 0代表请求数据正常
           data: seller
         })
       }),
