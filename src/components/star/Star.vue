@@ -29,12 +29,15 @@
         let score = Math.floor(this.score * 2) / 2
         let hasDecimal = score % 1 !== 0
         let integer = Math.floor(score)
+        // 有几个整数 push几个on
         for (let i = 0; i < integer; i++) {
           result.push(CLS_ON)
         }
+        // 如果有小数就push一个half
         if (hasDecimal) {
           result.push(CLS_HALF)
         }
+        // 剩下的就pushoff
         while (result.length < LENGTH) {
           result.push(CLS_OFF)
         }

@@ -17,18 +17,21 @@
           <span class="text">{{seller.supports[0].description}}</span>
         </div>
       </div>
-      <div v-if="seller.supports" class="support-count">
+      <div v-if="seller.supports" class="support-count" @click="showDetail">
         <span class="count">{{seller.supports.length}}个</span>
         <i class="icon-keyboard_arrow_right"></i>
       </div>
     </div>
+    <!-- 公告栏 -->
     <div class="bulletin-wrapper" @click="showDetail">
       <span class="bulletin-title"></span><span class="bulletin-text">{{seller.bulletin}}</span>
       <i class="icon-keyboard_arrow_right"></i>
     </div>
+    <!-- header的模糊北京 -->
     <div class="background">
       <img :src="seller.avatar" width="100%" height="100%">
     </div>
+    <!-- 弹出层detail -->
     <transition name="fade">
       <div class="detail" v-show="detailShow">
         <div class="detail-wrapper clearfix">
@@ -98,7 +101,7 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  @import "../../common/stylus/mixin"
+  @import "../../common/stylus/mixin";
 
   .header
     position: relative
@@ -217,8 +220,9 @@
       width: 100%
       height: 100%
       overflow: auto
-      background: rgba(7, 17, 27, 0.5)
+      background: rgba(7, 17, 27, 0.6)
       opacity: 1;
+      backdrop-filter: blur(10px) /* ios下背景模糊 */
       &.fade-enter,&.fade-leave-to
         opacity: 0;
         background: rgba(7, 17, 27, 0.2);

@@ -109,6 +109,10 @@
             this._initScroll()
             this._calculateHeight()
           })
+          // setTimeout(() => {
+          //   this._initScroll()
+          //   this._calculateHeight()
+          // }, 20)
         }
       })
       // 接受cartcontrol中发送的数据
@@ -120,6 +124,7 @@
       // })
     },
     methods: {
+      // 点左侧 右侧滚动到相应位置
       selectMenu(index, event) {
         // 浏览器原生事件没有_constructed属性,如果监听到是浏览器的事件 就return
         if (!event._constructed) {
@@ -149,18 +154,19 @@
           // console.log(this.$refs.shopcart)
         })
       },
+      // 初始化BScroll
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true
         })
+
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
-          probeType: 3,
+          probeType: 3, // 滚动的时候事实告诉我们滚动的位置
           click: true
         })
         // BScoll监听滚动事件 pos为实时滚动位置
         this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y))
-          // console.log(this.scrollY)
         })
       },
       // 计算高度区间
@@ -259,7 +265,7 @@
           border-none()
           margin-bottom: 0;
         .icon
-          flex: 0 0 57
+          flex: 0 0 57px
           width: 57px;
           margin-right: 10px;
         .content
