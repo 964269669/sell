@@ -4,9 +4,12 @@
       <div class="content" @click="toggleList">
         <div class="content-left">
           <div class="logo-wrapper">
+            <!-- totalCount>0 高亮 -->
             <div class="logo" :class="{'highlight':totalCount>0}">
+              <!-- totalCount>0小图标高亮 -->
               <span class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></span>
             </div>
+            <!-- totalCount>0角标显示 -->
             <div class="num" v-show="totalCount>0">{{totalCount}}</div>
           </div>
           <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
@@ -18,6 +21,7 @@
           </div>
         </div>
       </div>
+      <!-- 动画小球 -->
       <div class="ball-container">
         <transition-group name="drop" tag="div" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
           <div class="ball" v-for="(ball,index) in balls" v-show="ball.show" :key="index">
@@ -67,15 +71,11 @@
 
   export default {
     props: {
-      selectFoods: {
+      selectFoods: { // 选择的商品
         type: Array,
+        // 如果默认值是数组或者对象就要是函数形似的
         default() {
-          return [
-            {
-              price: 10,
-              count: 1
-            }
-          ] // 如果默认值是数组或者对象就要是函数形似的
+          return []
         }
       },
       deliveryPrice: {
@@ -105,7 +105,7 @@
           {
             show: false
           }
-        ],
+        ], // 小球
         dropBalls: [], // 已经下落的小球
         fold: true // 已选菜单展开折叠
       }
@@ -174,7 +174,7 @@
     methods: {
       // el是cartcontrol组件中的event.target
       drop(el) {
-        console.log('drop')
+        // console.log('drop')
         for (let i = 0; i < this.balls.length; i++) {
           let ball = this.balls[i]
           if (!ball.show) {
@@ -193,21 +193,20 @@
           // 找到所有show为true的小球
           if (ball.show) {
             let rect = ball.el.getBoundingClientRect()
-            let x = rect.left - 32
+            let x = rect.left - 32 // 32是小球的左偏移
             let y = -(window.innerHeight - rect.top - 22)
             el.style.display = '' // 显示
             // 外层做纵向动画
             el.style.webkitTransform = `translate3d(0, ${y}px, 0)`
             el.style.transform = `translate3d(0, ${y}px, 0)`
-            let inner = el.getElementsByClassName('inner-hook')[0]
             // 内层做横向动画
+            let inner = el.getElementsByClassName('inner-hook')[0]
             inner.style.webkitTransform = `translate3d(${x}px, 0, 0)`
             inner.style.transform = `translate3d(${x}px, 0, 0)`
           }
         }
       },
       enter(el, done) {
-        // console.log('enter')
         /* eslint-disable no-unused-vars */
         let rf = el.offsetHeight // 主动触发浏览器重绘
         this.$nextTick(() => {
@@ -222,6 +221,7 @@
       },
       afterEnter(el) {
         // console.log('after')
+        // 动画完毕 情况dropBalls，show变成false
         let ball = this.dropBalls.shift()
         if (ball) {
           ball.show = false

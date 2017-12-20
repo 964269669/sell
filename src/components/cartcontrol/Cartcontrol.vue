@@ -20,19 +20,24 @@
       }
     },
     methods: {
+      // 增加商品
       addCart(event) {
+        // 该组件所在面板goodsWrapper使用了BScroll 所以要先click:true
+        // 再判断是不是PC端点击
         if (!event._constructed) {
           return
         }
         if (!this.food.count) {
+          // 通过props传过来的数据 要添加/删除字段 得用Vue.set
           Vue.set(this.food, 'count', 1)
         } else {
           this.food.count++
         }
         // 派发事件
-        this.$root.eventHub.$emit('cart.add', event.target)
-        // this.$emit('cart.add', event.target)
+        // this.$root.eventHub.$emit('cart.add', event.target)
+        this.$emit('cartadd', event.target)
       },
+      // 减少商品
       decreaseCart(event) {
         if (!event._constructed) {
           return
@@ -58,7 +63,7 @@
         line-height: 24px;
         color: rgb(0, 160, 220)
       &.move-enter-active,&.move-leave-active
-        transform: translate3d(0px, 0, 0)
+        transform: translate3d(0, 0, 0)
         opacity: 1;
         transition: all 0.4s linear
         .inner
