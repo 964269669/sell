@@ -37,6 +37,7 @@
           </transition>
         </div> -->
       </div>
+      <!-- 购物车列表 -->
       <transition name="fold">
         <div class="shopcart-list" v-show="listShow">
           <div class="list-header">
@@ -146,7 +147,7 @@
           return 'enough'
         }
       },
-      // 已选菜单的显隐
+      // (绑定到购物车和北京遮罩层)购物车详情页的显隐
       listShow() {
         // 如果没有商品则折叠
         if (!this.totalCount) {
@@ -228,6 +229,7 @@
           el.style.display = 'none'
         }
       },
+      // (绑定到Shopcart)购物车详情页显示隐藏
       toggleList() {
         if (!this.totalCount) {
           return
