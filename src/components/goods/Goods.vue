@@ -141,7 +141,7 @@
           return
         }
         this.selectedFood = food
-
+        // 调用子组件food的方法
         this.$refs.food.show()
       },
       _drop(target) {
