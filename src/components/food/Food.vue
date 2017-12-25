@@ -30,11 +30,14 @@
           <h1 class="title">商品信息</h1>
           <p class="text">{{food.info}}</p>
         </div>
+        <!-- split组件 -->
         <split></split>
+        <!-- 商品评价区块 -->
         <div class="rating">
           <h1 class="title">商品评价</h1>
           <!-- ratingselect组件 -->
           <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings" @rating-type-select="ratingTypeSelect" @content-toggle="contentToggle"></ratingselect>
+          <!-- 评价内容列表区块 -->
           <div class="rating-wrapper">
             <ul v-show="food.ratings && food.ratings.length">
               <li v-show="needShow(rating.rateType,rating.text)" v-for="rating in food.ratings" class="rating-item border-1px">
@@ -122,6 +125,7 @@
       // 监听子组件rating-type-select的回调函数
       ratingTypeSelect(type) {
         this.selectType = type
+        // 显示类型改变 高度就变化了 而BScroll检测的滚动高度没变所以要刷新
         this.$nextTick(() => {
           this.scroll.refresh()
         })
@@ -129,6 +133,7 @@
       // 监听子组件content-toggle的回调函数
       contentToggle(onlyContent) {
         this.onlyContent = onlyContent
+        // 显示类型改变 高度就变化了 而BScroll检测的滚动高度没变所以要刷新
         this.$nextTick(() => {
           this.scroll.refresh()
         })

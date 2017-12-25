@@ -13,23 +13,23 @@
 </template>
 
 <script type="text/ecmascript-6">
-  const POSITIVE = 0
-  const NEGATIVE = 1
-  const ALL = 2
+  const POSITIVE = 0 // 推荐或满意的评价类型
+  const NEGATIVE = 1 // 吐槽或不满意的评价类型
+  const ALL = 2 // 显示所有评价类型
 
   export default {
     props: {
-      ratings: {
+      ratings: { // 具体评价内容
         type: Array,
         default() {
           return []
         }
       },
-      selectType: {
+      selectType: { // 选择显示的评价类型
         type: Number,
         default: ALL
       },
-      onlyContent: {
+      onlyContent: { // 是否只显示有内容的评价
         type: Boolean,
         default: false
       },
@@ -45,11 +45,13 @@
       }
     },
     computed: {
+      // 过滤ratings 只显示rateType为POSITIVE的评价
       positives() {
         return this.ratings.filter((rating) => {
           return rating.rateType === POSITIVE
         })
       },
+      // 过滤ratings 只显示rateType为NEGATIVE的评价
       negatives() {
         return this.ratings.filter((rating) => {
           return rating.rateType === NEGATIVE
@@ -57,20 +59,22 @@
       }
     },
     methods: {
+      // 点击切换评价类型
       select(type, event) {
         if (!event._constructed) {
           return
         }
-        // 派发事件 通知父组件selectType改变了
+        // 派发事件 通知父组件food.vue selectType改变了
         // this.$root.eventHub.$emit('ratingType.select', type)
         this.$emit('rating-type-select', type)
       },
+      // 点解切换是否只显示有内容的评价
       toggleContent() {
         if (!event._constructed) {
           return
         }
         // this.onlyContent = !this.onlyContent
-        // 派发事件 通知父组件onlyContent改变了
+        // 派发事件 通知父组件food.vue onlyContent改变了
         // this.$root.eventHub.$emit('content.toggle', this.onlyContent)
         this.$emit('content-toggle', !this.onlyContent)
       }
