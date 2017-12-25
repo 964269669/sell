@@ -44,7 +44,8 @@
       <!-- 底部结算区域 -->
       <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
     </div>
-    <food :food="selectedFood" ref="food"></food>
+    <!-- 商品详情页组件 -->
+    <food :food="selectedFood" ref="food" @cartadd="_drop"></food>
   </div>
 </template>
 

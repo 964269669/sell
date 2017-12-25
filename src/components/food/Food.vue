@@ -18,7 +18,7 @@
             <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
           </div>
           <div class="cartcontrol-wrapper">
-            <cartcontrol :food="food"></cartcontrol>
+            <cartcontrol :food="food" @cartadd="pass"></cartcontrol>
           </div>
           <transition name="fade">
             <div @click.stop.prevent="addFirst" class="buy" v-show="!food.count || food.count===0">加入购物车</div>
@@ -106,12 +106,18 @@
       hide() {
         this.showFlag = false
       },
+      // 点击加入购物车
       addFirst(event) {
         if (!event._constructed) {
           return
         }
-        this.$root.eventHub.$emit('cart.add', event.target)
+        // this.$root.eventHub.$emit('cart.add', event.target)
+        this.$emit('cartadd', event.target)
         Vue.set(this.food, 'count', 1)
+      },
+      // 向父组件goods传递cartcontrol的事件
+      pass(target) {
+        this.$emit('cartadd', target)
       },
       // 监听子组件rating-type-select的回调函数
       ratingTypeSelect(type) {
