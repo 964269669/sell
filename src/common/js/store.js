@@ -18,7 +18,7 @@ export function saveToLocal(id, key, value) {
 }
 
 // 读取缓存
-export function lodaFromLocal(id, key, def) {
+export function loadFromLocal(id, key, def) {
   let seller = window.localStorage._seller_
   if (!seller) {
     return def

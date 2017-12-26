@@ -70,7 +70,7 @@
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
-  import {saveToLocal, lodaFromLocal} from 'common/js/store'
+  import {saveToLocal, loadFromLocal} from 'common/js/store'
   import star from 'components/star/Star'
   import split from 'components/split/Split'
 
@@ -79,7 +79,7 @@
       return {
         // 自执行函数获取缓存中的数据
         favorite: (() => {
-          return lodaFromLocal(this.seller.id, 'favorite', false)
+          return loadFromLocal(this.seller.id, 'favorite', false)
         })()
       }
     },
@@ -101,7 +101,7 @@
         // seller变化了就初始化BScroll
         // 从评论区块切换到商家区块seller不会变这里也就不会执行 所以要在mounted中再调用
         this._initScroll() // 初始化整体的
-        // this._initPics() // 初始化图片
+        this._initPics() // 初始化图片
       }
     },
     methods: {
@@ -116,7 +116,7 @@
         }
       },
       _initPics() {
-        // 计算ul.pic-list的宽度 超过外层宽度才可以实现滚动
+        // 计算ul.picList的宽度 超过外层宽度才可以实现滚动
         if (this.seller.pics) {
           let picWidth = 120
           let margin = 6

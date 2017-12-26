@@ -32,6 +32,7 @@ export default {
         // 自执行函数获取url地址的参数
         id: (() => {
           let queryParam = urlParse()
+          // console.log(queryParam)
           return queryParam.id
         })()
       }
